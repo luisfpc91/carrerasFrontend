@@ -1,0 +1,69 @@
+<nav-bar show-session="true"></nav-bar>
+<side-bar show-session="true"></side-bar>
+<main id="app-main" class="app-main in">
+    <div class="wrap">
+        <section class="app-content">
+            <div class="row">
+               <div class="col-md-12" style="background-color: white; border-radius: 9px;">
+                    <h1 class="text-center">Panel de carreras</h1>
+                    <hr/>
+                    <form class="form-inline" ng-submit="consultCarrera()">
+                        <div class="form-group">
+                            <label for="year">Año</label>
+                            <select ng-model="year" class="form-control" required>
+                                <option value="2018">2018</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="month">Mes</label>
+                            <select ng-model="month" class="form-control" required>
+                                <option value="01">Enero</option>
+                                <option value="02">Febero</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-info" type="submit">Consultar</button>
+                        </div>                           
+                    </form>
+                    <hr/>
+                    <div class="clearfix"></div>
+                    <div class="col-md-12" ng-repeat="c in carreras">
+                        <div class="col-md-8">
+                            <ul class="list-inline list-group">
+                                <li class="col-md-4 text-center list-group-item" ng-repeat="item in c.details | limitTo: 3">
+                                    <div>
+                                        <h2>{{item.pos_final}}</h2>
+                                        <img class="img-rounded image" src="{{item.image.url}}" />
+                                        <p><strong>{{item.piloto_name}}</strong></p>
+                                    </div>
+                                </li>
+                            </ul>
+                            <span class="clearfix"></span>
+                            <br/>   
+                            <h3 class="text-center">Vueltas Promedio</h3>
+                            <p class="text-center"><strong>{{c.promedio_vueltas.promedio}}</strong></p>
+                            <!-- div class="progress">
+                                <div id="barra" class="progress-bar progress-bar-success progress-bar-striped" role="progressbar" aria-valuenow="{{promedio_final}}"
+                                  aria-valuemin="0" aria-valuemax="100" style="width: 50%">
+                                    <span class="sr-only">{{$scope.promedio_final}}% Complete</span>
+                                </div>
+                                <input ng-model="promedio" type="hidden" value="{{c.promedio_vueltas.promedio}}"/>
+                            </div -->
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-center">Posición Escuderias</h3>
+                            <ol class="list-group">
+                                <li class="text-center list-group-item" ng-repeat="r in c.ranking_escuderias | limitTo: 3">
+                                    <div>
+                                        <img class="img-rounded image" src="{{r.image.url}}" />
+                                        <p><strong>{{r.nom_escuderia}}</strong></p>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div> 
+                </div> 
+            </div><!-- .row -->              
+        </section><!-- #dash-content -->
+    </div><!-- .wrap -->
+</main>

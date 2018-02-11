@@ -1,0 +1,155 @@
+<div class="menubar-left menubar-unfold  theme-primary menubar-light pace-done">
+    <nav-bar show-session="true"></nav-bar>
+    <side-bar show-session="true"></side-bar>
+    <main id="app-main" class="app-main in">
+        <div class="wrap">
+            <section class="app-content">
+                <div class="row">
+                    <div class="simple-page-form animated flipInY" id="signup-form" >
+                        <h1 class="text-center">Detalles de la carrera</h1>    
+                        <a type="button" data-target="#modal_add" data-toggle="modal" class="btn btn-primary">Agregar</a>
+                        <hr/>
+                        <div class="widget">
+                            <div class="widget-body">
+                                <table class="table table-bordered table-condensed table-responsive">
+                                    <thead>
+                                        <tr>
+                                           <th class="text-center">Seq Carrera</th>          
+                                           <th class="text-center">Carrera</th>
+                                           <th class="text-center">Piloto</th>
+                                           <th class="text-center">Pos. Sálida</th>
+                                           <th class="text-center">Pos. Final</th>
+                                           <th class="text-center">Vueltas</th>
+                                           <th class="text-center">Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in response">
+                                            <td class="text-center vertical">
+                                                {{item.seq_carrera}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.carrera_pais}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.piloto_name}}
+                                            </td>
+                                             <td class="text-center vertical">
+                                                {{item.pos_salida}}
+                                            </td> 
+                                             <td class="text-center vertical">
+                                                {{item.pos_final}}
+                                            </td> 
+                                             <td class="text-center vertical">
+                                                {{item.vueltas}}
+                                            </td>                                        
+                                            <td class="text-center vertical">
+                                                <a data-target="#modal_edit" data-toggle="modal" class="btn btn-info btn-sm boton-normal" ng-click="edit(item)">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div><!-- .widget -->                          
+                        </div> 
+                    </div> 
+                </div><!-- .row -->              
+            </section><!-- #dash-content -->
+        </div><!-- .wrap -->
+        <footer-bar show-session="true"></footer-bar>
+    </main>
+</div>
+<div id="modal_add" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="post()">
+                <div class="modal-header">
+                    <h2 class="text-center">Agregar Escuderia</h2>
+                </div>
+                <div class="modal-body">                    
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="seq_carrera">Seq Carrera:</label>
+                        <input id="seq_carrera" type="number" class="form-control" ng-model="newDetalles.seq_carrera" placeholder="Seq Carrera" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="nro_carrera">Carrera:</label>
+                        <select id="nro_carrera" class="form-control" ng-model="newDetalles.nro_carrera" ng-options="c.nro_carrera as c.pais for c in carreras" required >
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="doc_piloto">Piloto:</label>
+                        <select id="doc_piloto" class="form-control" ng-model="newDetalles.doc_piloto" ng-options="p.doc_piloto as p.nom_piloto for p in pilotos" required>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pos_salida">Posición de sálida:</label>
+                        <input id="pos_salida" type="number" class="form-control" ng-model="newDetalles.pos_salida" placeholder="Posición de sálida" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pos_final">Posición de final:</label>
+                        <input id="pos_final" type="number" class="form-control" ng-model="newDetalles.pos_final" placeholder="Posición de final" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="vueltas">Vueltas:</label>
+                        <input id="vueltas" type="number" class="form-control" ng-model="newDetalles.vueltas" placeholder="Vueltas" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-post" type="button" class="btn btn-warning btn-cancel" data-dismiss="modal">Cancelar</button>
+                    <button id="btn-create" type="submit" class="btn btn-primary">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_edit" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="put()">
+                <div class="modal-header">
+                    <h2 class="text-center">Editar detalles de la carrera</h2>
+                    <a id="btn-remove" class="pull-right btn btn-danger" title="Borrar Oferta" ng-click="trash(editDetalles)">
+                        <i class="fa fa-trash"></i>
+                    </a> 
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="seq_carrera">Seq Carrera:</label>
+                        <input id="seq_carrera" type="text" class="form-control" ng-model="editDetalles.seq_carrera" placeholder="Seq Carrera" readonly />
+                    </div>
+                     <div class="form-group col-md-6 col-sm-12">
+                        <label for="nro_carrera">Carrera:</label>
+                        <select id="nro_carrera" class="form-control" ng-model="editDetalles.nro_carrera" ng-options="c.nro_carrera as c.pais for c in carreras" required >
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="doc_piloto">Piloto:</label>
+                        <select id="doc_piloto" class="form-control" ng-model="editDetalles.doc_piloto" ng-options="p.doc_piloto as p.nom_piloto for p in pilotos" required>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pos_salida">Posición de sálida:</label>
+                        <input id="pos_salida" type="text" class="form-control" ng-model="editDetalles.pos_salida" placeholder="Posición de sálida" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pos_final">Posición de final:</label>
+                        <input id="pos_final" type="text" class="form-control" ng-model="editDetalles.pos_final" placeholder="Posición de final" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="vueltas">Vueltas:</label>
+                        <input id="vueltas" type="text" class="form-control" ng-model="editDetalles.vueltas" placeholder="Vueltas" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="picture=null; reset()" >Cancelar</button>
+                    <button id="btn-cancel-edit" hidden="hidden" data-dismiss="modal"></button>
+                    <button id="btn-edit" type="submit" class="btn btn-success">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

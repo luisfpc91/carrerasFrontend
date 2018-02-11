@@ -1,0 +1,168 @@
+<div class="menubar-left menubar-unfold  theme-primary menubar-light pace-done">
+    <nav-bar show-session="true"></nav-bar>
+    <side-bar show-session="true"></side-bar>
+    <main id="app-main" class="app-main in">
+        <div class="wrap">
+            <section class="app-content">
+                <div class="row">
+                    <div class="simple-page-form animated flipInY" id="signup-form" >
+                        <h1 class="text-center">Escuderias</h1>    
+                        <a type="button" data-target="#modal_add" data-toggle="modal" class="btn btn-primary">Agregar</a>
+                        <hr/>
+                        <div class="widget">
+                            <div class="widget-body">
+                                <table class="table table-bordered table-condensed table-responsive">
+                                    <thead>
+                                        <tr>
+                                           <th class="text-center">Código</th>          
+                                           <th class="text-center">Nombre</th>
+                                           <th class="text-center">Imagen</th>
+                                           <th class="text-center">Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in response">
+                                            <td class="text-center vertical">
+                                                {{item.cod_escuderia}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.nom_escuderia}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                <img class="img-rounded" src="{{item.image.url}}" width="70" />
+                                            </td>                                        
+                                            <td class="text-center vertical">
+                                                <a data-target="#modal_edit" data-toggle="modal" class="btn btn-info btn-sm boton-normal" ng-click="edit(item)">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div><!-- .widget -->                          
+                        </div> 
+                    </div> 
+                </div><!-- .row -->              
+            </section><!-- #dash-content -->
+        </div><!-- .wrap -->
+        <footer-bar show-session="true"></footer-bar>
+    </main>
+</div>
+<div id="modal_add" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="post_img()">
+                <div class="modal-header">
+                    <h2 class="text-center">Agregar Escuderia</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center form-group ">
+                        <div class="col-sm-6 text-left">
+                            <label for="form_upload">Agregar imagen</label>
+                            <input type="file" nv-file-select="" uploader="uploader" multiple />
+                            <p class="text-muted">Tamaño maximo permitido 2MB</p>
+                        </div>
+                        <div class="col-sm-12 text-left">
+                            <ul>
+                                <li ng-repeat="item in uploader.queue">
+                                    <div>Name: {{ item.file.name }}</div>
+                                    <div>Size: {{ item.file.size/1024/1024|number:2 }} Mb</div>
+                                    <div ng-show="uploader.isHTML5">
+                                        Progress: {{ item.progress }}
+                                        <div class="item-progress-box">
+                                            <div class="item-progress" ng-style="{ 'width': item.progress + '%' }"></div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="controller.isImage(item._file)">
+                                            <!-- Image preview -->                  
+                                            <div ng-thumb="{ file: item._file, height: 100 }"></div>
+                                    </div>                                    
+                                    <div>
+                                        <button ng-click="item.remove()" class="btn btn-danger">Remover</button>
+                                        <!--button ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" class="btn btn-primary" >Subir</button-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>  
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="cod_escuderia">Código:</label>
+                        <input id="cod_escuderia" type="text" class="form-control" ng-model="newEscuderia.cod_escuderia" placeholder="Código" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="nom_escuderia">Nombre:</label>
+                        <input id="nom_escuderia" type="text" class="form-control" ng-model="newEscuderia.nom_escuderia" placeholder="Nombre" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-post" type="button" class="btn btn-warning btn-cancel" data-dismiss="modal">Cancelar</button>
+                    <button id="btn-create" type="submit" class="btn btn-primary" ng-click="p=1">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_edit" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="picture ? post_img() : put()">
+                <div class="modal-header">
+                    <h2 class="text-center">Editar Escuderia</h2>
+                    <a id="btn-remove" class="pull-right btn btn-danger" title="Borrar Oferta" ng-click="trash(editEscuderia)">
+                        <i class="fa fa-trash"></i>
+                    </a> 
+                </div>
+                <div class="modal-body">
+                    <div id="img_old" class="col-sm-12 text-left" ng-hide="picture">
+                        <img src="{{editEscuderia.image.url}}" style="width: auto; height: 100px;" />
+                    </div>                               
+                    <div class="col-sm-12 text-center form-group ">
+                        <div class="col-sm-6 text-left">
+                            <label for="form_upload">Agregar nueva imagen</label>
+                            <input type="file" nv-file-select="" uploader="uploader" multiple ng-click="picture=1"/>
+                            <p class="text-muted">Tamaño maximo permitido 2MB</p>
+                        </div>
+                        <div class="col-sm-12 text-left">                            
+                            <ul>
+                                <li ng-repeat="item in uploader.queue">
+                                    <div>Name: {{ item.file.name }}</div>
+                                    <div>Size: {{ item.file.size/1024/1024|number:2 }} Mb</div>
+                                    <div ng-show="uploader.isHTML5">
+                                        Progress: {{ item.progress }}
+                                        <div class="item-progress-box">
+                                            <div class="item-progress" ng-style="{ 'width': item.progress + '%' }"></div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="controller.isImage(item._file)">
+                                        <!-- Image preview -->                  
+                                        <div ng-thumb="{ file: item._file, height: 100 }"></div>
+                                    </div>
+                                    <div>
+                                        <button ng-click="item.remove()" class="btn btn-danger remove_img">Remover</button>
+                                        <!--button ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" class="btn btn-primary" >Subir</button-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="cod_escuderia" >Código:</label>
+                        <input id="cod_escuderia" type="text" class="form-control" ng-model="editEscuderia.cod_escuderia" placeholder="Código" readonly />
+                    </div>    
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="nom_escuderia" >Nombre:</label>
+                        <input id="nom_escuderia" type="text" class="form-control" ng-model="editEscuderia.nom_escuderia" placeholder="Nombre" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="picture=null; reset()" >Cancelar</button>
+                    <button id="btn-cancel-edit" hidden="hidden" data-dismiss="modal"></button>
+                    <button id="btn-edit" type="submit" class="btn btn-success" ng-click="e=1">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

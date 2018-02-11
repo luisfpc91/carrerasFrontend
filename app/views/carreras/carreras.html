@@ -1,0 +1,127 @@
+<div class="menubar-left menubar-unfold  theme-primary menubar-light pace-done">
+    <nav-bar show-session="true"></nav-bar>
+    <side-bar show-session="true"></side-bar>
+    <main id="app-main" class="app-main in">
+        <div class="wrap">
+            <section class="app-content">
+                <div class="row">
+                    <div class="simple-page-form animated flipInY" id="signup-form" >
+                        <h1 class="text-center">Carreras</h1>    
+                        <a type="button" data-target="#modal_add" data-toggle="modal" class="btn btn-primary">Agregar</a>
+                        <hr/>
+                        <div class="widget">
+                            <div class="widget-body">
+                                <table class="table table-bordered table-condensed table-responsive">
+                                    <thead>
+                                        <tr>
+                                           <th class="text-center">Nro de carrera</th>
+                                           <th class="text-center">Fécha de carrera</th>
+                                           <th class="text-center">País</th>
+                                           <th class="text-center">Vueltas totales</th>
+                                           <th class="text-center">Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in response">
+                                            <td class="text-center vertical">
+                                                {{item.nro_carrera}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.fec_carrera | date: "dd/M/yy"}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.pais}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.vueltas_totales}}
+                                            </td>                                   
+                                            <td class="text-center vertical">
+                                                <a data-target="#modal_edit" data-toggle="modal" class="btn btn-info btn-sm boton-normal" ng-click="edit(item)">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div><!-- .widget -->                          
+                        </div> 
+                    </div> 
+                </div><!-- .row -->              
+            </section><!-- #dash-content -->
+        </div><!-- .wrap -->
+        <footer-bar show-session="true"></footer-bar>
+    </main>
+</div>
+<div id="modal_add" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="post()">
+                <div class="modal-header">
+                    <h2 class="text-center">Agregar Carrera</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="nro_carrera">Nro de carrera:</label>
+                        <input id="nro_carrera" type="number" class="form-control" ng-model="newCarrera.nro_carrera" placeholder="Nro de carrera" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="fec_carrera">Fecha de carrera:</label>
+                        <input id="fec_carrera" type="date" class="form-control" ng-model="newCarrera.fec_carrera" placeholder="Fecha de carrera" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pais">Pais:</label>
+                        <input id="pais" type="text" class="form-control" ng-model="newCarrera.pais" placeholder="Pais" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="vueltas_totales">Vueltas totales:</label>
+                        <input id="vueltas_totales" type="number" class="form-control" ng-model="newCarrera.vueltas_totales" placeholder="Vueltas totales" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-post" type="button" class="btn btn-warning btn-cancel" data-dismiss="modal">Cancelar</button>
+                    <button id="btn-create" type="submit" class="btn btn-primary">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_edit" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="put()">
+                <div class="modal-header">
+                    <h2 class="text-center">Editar Carrera</h2>
+                    <a id="btn-remove" class="pull-right btn btn-danger" title="Borrar Carrera" ng-click="trash(editCarrera)">
+                        <i class="fa fa-trash"></i>
+                    </a> 
+                </div>
+                <div class="modal-body">
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="nro_carrera">Nro de carrera:</label>
+                        <input id="nro_carrera" type="number" class="form-control" ng-model="editCarrera.nro_carrera" placeholder="Nro de carrera" readonly />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="fec_carrera">Fecha de carrera:</label>
+                        <input id="fec_carrera" type="date" class="form-control" ng-model="editCarrera.fec_carrera" placeholder="Fecha de carrera" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="pais">Pais:</label>
+                        <input id="pais" type="text" class="form-control" ng-model="editCarrera.pais" placeholder="Pais" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="vueltas_totales">Vueltas totales:</label>
+                        <input id="vueltas_totales" type="number" class="form-control" ng-model="editCarrera.vueltas_totales" placeholder="Vueltas totales" required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="picture=null; reset()" >Cancelar</button>
+                    <button id="btn-cancel-edit" hidden="hidden" data-dismiss="modal"></button>
+                    <button id="btn-edit" type="submit" class="btn btn-success">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

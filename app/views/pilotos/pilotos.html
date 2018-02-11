@@ -1,0 +1,196 @@
+<div class="menubar-left menubar-unfold  theme-primary menubar-light pace-done">
+    <nav-bar show-session="true"></nav-bar>
+    <side-bar show-session="true"></side-bar>
+    <main id="app-main" class="app-main in">
+        <div class="wrap">
+            <section class="app-content">
+                <div class="row">
+                    <div class="simple-page-form animated flipInY" id="signup-form" >
+                        <h1 class="text-center">Pilotos</h1>    
+                        <a type="button" data-target="#modal_add" data-toggle="modal" class="btn btn-primary">Agregar</a>
+                        <hr/>
+                        <div class="widget">
+                            <div class="widget-body">
+                                <table class="table table-bordered table-condensed table-responsive">
+                                    <thead>
+                                        <tr>
+                                           <th class="text-center">Documento</th>          
+                                           <th class="text-center">Nombre</th>
+                                           <th class="text-center">Escuderia</th>
+                                           <th class="text-center">F.N.</th>
+                                           <th class="text-center">Foto</th>
+                                           <th class="text-center">Editar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="item in response">
+                                            <td class="text-center vertical">
+                                                {{item.doc_piloto}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.nom_piloto}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.escuderia_name}}
+                                            </td>
+                                            <td class="text-center vertical">
+                                                {{item.fec_nacimiento | date: "dd/MM/y"}}
+                                            </td>                                            
+                                            <td class="text-center vertical">
+                                                <img class="img-rounded" src="{{item.image.url}}" width="70" />
+                                            </td>                                        
+                                            <td class="text-center vertical">
+                                                <a data-target="#modal_edit" data-toggle="modal" class="btn btn-info btn-sm boton-normal" ng-click="edit(item)">
+                                                    <i class="fa fa-plus"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div><!-- .widget -->                          
+                        </div> 
+                    </div> 
+                </div><!-- .row -->              
+            </section><!-- #dash-content -->
+        </div><!-- .wrap -->
+        <footer-bar show-session="true"></footer-bar>
+    </main>
+</div>
+<div id="modal_add" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="post_img()">
+                <div class="modal-header">
+                    <h2 class="text-center">Agregar Piloto</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center form-group ">
+                        <div class="col-sm-6 text-left">
+                            <label for="form_upload">Agregar Foto</label>
+                            <input type="file" nv-file-select="" uploader="uploader" multiple />
+                            <p class="text-muted">Tamaño maximo permitido 2MB</p>
+                        </div>
+                        <div class="col-sm-12 text-left">
+                            <ul>
+                                <li ng-repeat="item in uploader.queue">
+                                    <div>Name: {{ item.file.name }}</div>
+                                    <div>Size: {{ item.file.size/1024/1024|number:2 }} Mb</div>
+                                    <div ng-show="uploader.isHTML5">
+                                        Progress: {{ item.progress }}
+                                        <div class="item-progress-box">
+                                            <div class="item-progress" ng-style="{ 'width': item.progress + '%' }"></div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="controller.isImage(item._file)">
+                                            <!-- Image preview -->                  
+                                            <div ng-thumb="{ file: item._file, height: 100 }"></div>
+                                    </div>                                    
+                                    <div>
+                                        <button ng-click="item.remove()" class="btn btn-danger">Remover</button>
+                                        <!--button ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" class="btn btn-primary" >Subir</button-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>  
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="doc_piloto">Documento:</label>
+                        <input id="doc_piloto" type="text" class="form-control" ng-model="newPiloto.doc_piloto" placeholder="Documento" required />
+                    </div>
+                     <div class="form-group col-md-6 col-sm-12">
+                        <label for="nom_piloto">Nombre:</label>
+                        <input id="nom_piloto" type="text" class="form-control" ng-model="newPiloto.nom_piloto" placeholder="Nombre" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="cod_escuderia">Escuderia:</label>
+                        <select id="cod_escuderia" class="form-control" ng-model="newPiloto.cod_escuderia" ng-options="e.cod_escuderia as e.nom_escuderia for e in escuderias" required >
+                            
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="fec_nacimiento">Fecha de nacimiento:</label>
+                        <input id="fec_nacimiento" type="date" class="form-control" ng-model="newPiloto.fec_nacimiento" placeholder="F.N." required />
+                    </div>                   
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button id="btn-cancel-post" type="button" class="btn btn-warning btn-cancel" data-dismiss="modal">Cancelar</button>
+                    <button id="btn-create" type="submit" class="btn btn-primary" ng-click="p=1">Crear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="modal_edit" class="fade modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form ng-submit="picture ? post_img() : put()">
+                <div class="modal-header">
+                    <h2 class="text-center">Editar Piloto</h2>
+                    <a id="btn-remove" class="pull-right btn btn-danger" title="Borrar Oferta" ng-click="trash(editPiloto)">
+                        <i class="fa fa-trash"></i>
+                    </a> 
+                </div>
+                <div class="modal-body">
+                    <div id="img_old" class="col-sm-12 text-left" ng-hide="picture">
+                        <img src="{{editPiloto.image.url}}" style="width: auto; height: 100px;" />
+                    </div>                               
+                    <div class="col-sm-12 text-center form-group ">
+                        <div class="col-sm-6 text-left">
+                            <label for="form_upload">Agregar nueva foto</label>
+                            <input type="file" nv-file-select="" uploader="uploader" multiple ng-click="picture=1"/>
+                            <p class="text-muted">Tamaño maximo permitido 2MB</p>
+                        </div>
+                        <div class="col-sm-12 text-left">                            
+                            <ul>
+                                <li ng-repeat="item in uploader.queue">
+                                    <div>Name: {{ item.file.name }}</div>
+                                    <div>Size: {{ item.file.size/1024/1024|number:2 }} Mb</div>
+                                    <div ng-show="uploader.isHTML5">
+                                        Progress: {{ item.progress }}
+                                        <div class="item-progress-box">
+                                            <div class="item-progress" ng-style="{ 'width': item.progress + '%' }"></div>
+                                        </div>
+                                    </div>
+                                    <div ng-if="controller.isImage(item._file)">
+                                        <!-- Image preview -->                  
+                                        <div ng-thumb="{ file: item._file, height: 100 }"></div>
+                                    </div>
+                                    <div>
+                                        <button ng-click="item.remove()" class="btn btn-danger remove_img">Remover</button>
+                                        <!--<button ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess" class="btn btn-primary" >Subir</button-->
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="doc_piloto">Documento:</label>
+                        <input id="doc_piloto" type="text" class="form-control" ng-model="editPiloto.doc_piloto" placeholder="Documento" readonly />
+                    </div>
+                     <div class="form-group col-md-6 col-sm-12">
+                        <label for="nom_piloto">Nombre:</label>
+                        <input id="nom_piloto" type="text" class="form-control" ng-model="editPiloto.nom_piloto" placeholder="Nombre" required />
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="cod_escuderia">Escuderia:</label>
+                        <select id="cod_escuderia" class="form-control" ng-model="editPiloto.cod_escuderia" ng-options="e.cod_escuderia as e.nom_escuderia for e in escuderias" required >
+                            
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6 col-sm-12">
+                        <label for="fec_nacimiento">Fecha de nacimiento:</label>
+                        <input id="fec_nacimiento" type="date" class="form-control" ng-model="editPiloto.fec_nacimiento" placeholder="F.N." required />
+                    </div>
+                    <div class="clearfix"></div>  
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal" ng-click="picture=null; reset()" >Cancelar</button>
+                    <button id="btn-cancel-edit" hidden="hidden" data-dismiss="modal"></button>
+                    <button id="btn-edit" type="submit" class="btn btn-success" ng-click="e=1">Editar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
